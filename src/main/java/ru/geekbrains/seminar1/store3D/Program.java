@@ -41,8 +41,14 @@ public class Program {
         // а угол - коэффициентами вращения по трём осям.
         // Яркость и цвет для первого оставим равными дефолтным значениям, а для второго придумаем.
 
-        Flash flash1 = new Flash(new Point3D(5, 5, 5), new Angle3D(0.5, 0.5, 0.5));
-        Flash flash2 = new Flash(new Point3D(7, 1, 7), new Angle3D(0.1, 0.2, 0.3), Color.BLUE, 0.7F);
+        Flash flash1 = new Flash(
+                new Point3D(5, 5, 5),
+                new Angle3D(0.5, 0.5, 0.5));
+        Flash flash2 = new Flash(
+                new Point3D(7, 1, 7),
+                new Angle3D(0.1, 0.2, 0.3),
+                Color.BLUE,
+                0.7F);
         List<Flash> flashes = new ArrayList<>();
         flashes.add(flash1);
         flashes.add(flash2);
