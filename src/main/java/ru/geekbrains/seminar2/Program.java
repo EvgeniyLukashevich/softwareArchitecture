@@ -40,7 +40,7 @@ public class Program {
 
         for (int i = 0; i < numberOfRounds; i++) {
 
-            int enemyLevel = random.nextInt(heroLevel - 1, heroLevel + 1);
+            int enemyLevel = random.nextInt(heroLevel - 1, heroLevel + 2);
 
             if (random.nextInt(2) == 1)
                 builder3 = new SamuraiBuilder();

@@ -48,30 +48,36 @@ public abstract class Fighter {
 
     /**
      * Метод нанесения урона
+     *
      * @param enemy объект одного из подклассов класса Fighter
      */
     protected abstract void dealingDamage(Fighter enemy);
 
     /**
      * Метод получения урона
+     *
      * @param damage - количество нанесенного урона
      */
     protected void takingDamage(int damage) {
         this.health = this.health - damage;
-    };
+    }
+
+    ;
 
     /**
      * Метод распределения характеристики, исходя из указанного уровня
+     *
      * @param level уровень персонажа
      */
     protected abstract void leveling(int level);
 
     /**
      * Метод проведения аттаки
+     *
      * @param enemy объект одного из подклассов класса Fighter
      */
     public void attack(Fighter enemy) {
-        if (random.nextInt(this.agility+1) < random.nextInt(enemy.agility+1))
+        if (random.nextInt(this.agility + 1) < random.nextInt(enemy.agility + 1))
             System.out.printf("%s промахнулся\n", this.name);
         else
             dealingDamage(enemy);
