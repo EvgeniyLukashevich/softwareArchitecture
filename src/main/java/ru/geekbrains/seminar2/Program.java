@@ -36,11 +36,11 @@ public class Program {
 
         // Предварительный турнир (с установленным ранее количеством схваток).
         // В каждой схватке будет генерироваться соперник с уровнем в диапазоне:
-        // [уровень нашего персонажа - 1, уровень нашего персонажа + 1].
+        // [уровень нашего персонажа - 3, уровень нашего персонажа + 1].
 
         for (int i = 0; i < numberOfRounds; i++) {
 
-            int enemyLevel = random.nextInt(heroLevel - 1, heroLevel + 2);
+            int enemyLevel = random.nextInt(heroLevel - 3, heroLevel + 2);
 
             if (random.nextInt(2) == 1)
                 builder3 = new SamuraiBuilder();
