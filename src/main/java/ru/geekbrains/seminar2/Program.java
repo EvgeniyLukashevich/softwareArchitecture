@@ -69,6 +69,8 @@ public class Program {
                 }
             }
 
+            hero.relax();
+
             if (lose) {
                 System.out.printf("%s не смог добраться до босса.\n", hero.getName());
                 break;

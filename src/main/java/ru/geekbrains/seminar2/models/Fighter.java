@@ -83,4 +83,11 @@ public abstract class Fighter {
             dealingDamage(enemy);
     }
 
+    /**
+     * Мотод восстановленияч после боя
+     */
+    public void relax() {
+        this.health = 10 + level;
+    }
+
 }
