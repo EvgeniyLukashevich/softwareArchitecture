@@ -6,31 +6,39 @@ import java.util.Date;
 
 public class Program {
 
-/**
- * Разработать контракты и компоненты системы "Покупка онлайн билетов на автобус в час пик".
- *
- * 1.  Предусловия.
- * 2.  Постусловия.
- * 3.  Инвариант.
- * 4.  Определить абстрактные и конкретные классы.
- * 5.  Определить интерфейсы.
- * 6.  Реализовать наследование.
- * 7.  Выявить компоненты.
- * 8.  Разработать Диаграмму компонент использую нотацию UML 2.0. Общая без деталей.
- */
+    /**
+     * Разработать контракты и компоненты системы "Покупка онлайн билетов на автобус в час пик".
+     * <p>
+     * 1.  Предусловия.
+     * 2.  Постусловия.
+     * 3.  Инвариант.
+     * 4.  Определить абстрактные и конкретные классы.
+     * 5.  Определить интерфейсы.
+     * 6.  Реализовать наследование.
+     * 7.  Выявить компоненты.
+     * 8.  Разработать Диаграмму компонент использую нотацию UML 2.0. Общая без деталей.
+     */
     public static void main(String[] args) {
 
         Core core = new Core();
         MobileApp mobileApp = new MobileApp(core.getTicketProvider(), core.getCustomerProvider());
         BusStation busStation = new BusStation(core.getTicketProvider());
 
-        if (mobileApp.buyTicket("11000000221")){
+        if (mobileApp.buyTicket("11000000221")) {
             System.out.println("Клиент успешно купил билет.");
             mobileApp.searchTicket(new Date());
-            /*Collection<Ticket> tickets = mobileApp.getTickets();
-            if (busStation.checkTicket(tickets.stream().findFirst().get().getQrcode())){
-                System.out.println("Клиент успешно прошел в автобус.");
-            }*/
+
+
+            Collection<Ticket> tickets = mobileApp.getTickets();
+
+            for (Ticket ticket : tickets) {
+                System.out.println(ticket.getQrcode());
+                if (busStation.checkTicket(ticket.getQrcode())) {
+                    System.out.println("Клиент успешно прошел в автобус.");
+                    break;
+                }
+            }
+
         }
 
 
@@ -38,14 +46,14 @@ public class Program {
 
 }
 
-class Core{
+class Core {
 
     private final CustomerProvider customerProvider;
     private final TicketProvider ticketProvider;
     private final PaymentProvider paymentProvider;
     private final Database database;
 
-    public Core(){
+    public Core() {
         database = new Database();
         customerProvider = new CustomerProvider(database);
         paymentProvider = new PaymentProvider();
@@ -66,7 +74,7 @@ class Core{
 /**
  * Покупатель
  */
-class Customer{
+class Customer {
 
     private static int counter;
 
@@ -95,7 +103,7 @@ class Customer{
 /**
  * Билет
  */
-class Ticket{
+class Ticket {
 
     private int id;
 
@@ -106,6 +114,11 @@ class Ticket{
     private String qrcode;
 
     private boolean enable = true;
+
+    public Ticket(){
+
+        this.qrcode = "AAA";
+    }
 
     public void setEnable(boolean enable) {
         this.enable = enable;
@@ -136,7 +149,7 @@ class Ticket{
 /**
  * База данных
  */
-class Database{
+class Database {
 
     private static int counter;
     private Collection<Ticket> tickets = new ArrayList<>();
@@ -149,7 +162,6 @@ class Database{
     }
 
     public Collection<Ticket> getTickets() {
-
         return tickets;
     }
 
@@ -159,35 +171,35 @@ class Database{
 
     /**
      * Получить актуальную стоимость билета
+     *
      * @return
      */
-    public double getTicketAmount(){
+    public double getTicketAmount() {
         return 45;
     }
 
     /**
      * Получить идентификатор заявки на покупку билета
+     *
      * @return
      */
-    public int createTicketOrder(int clientId){
+    public int createTicketOrder(int clientId) {
         return ++counter;
     }
 
 }
 
-class PaymentProvider{
-
-    public boolean buyTicket(int orderId, String cardNo, double amount){
+class PaymentProvider {
+    public boolean buyTicket(int orderId, String cardNo, double amount) {
         //TODO: Обращение к платежному шлюзу, попытка выполнить списание средств ...
         return true;
     }
-
 }
 
 /**
  * Мобильное приложение
  */
-class MobileApp{
+class MobileApp {
 
     private final Customer customer;
     private final TicketProvider ticketProvider;
@@ -201,52 +213,50 @@ class MobileApp{
 
     }
 
-    public Collection<Ticket> getTickets(){
+    public Collection<Ticket> getTickets() {
         return customer.getTickets();
     }
 
-    public void searchTicket(Date date){
+    public void searchTicket(Date date) {
         customer.setTickets(ticketProvider.searchTicket(customer.getId(), new Date()));
     }
 
-    public boolean buyTicket(String cardNo){
+    public boolean buyTicket(String cardNo) {
         return ticketProvider.buyTicket(customer.getId(), cardNo);
     }
 
 }
 
-class TicketProvider{
+class TicketProvider {
 
     private final Database database;
     private final PaymentProvider paymentProvider;
 
-    public TicketProvider(Database database, PaymentProvider paymentProvider){
+    public TicketProvider(Database database, PaymentProvider paymentProvider) {
         this.database = database;
         this.paymentProvider = paymentProvider;
     }
 
-    public Collection<Ticket> searchTicket(int clientId, Date date){
+    public Collection<Ticket> searchTicket(int clientId, Date date) {
 
         Collection<Ticket> tickets = new ArrayList<>();
-        for (Ticket ticket: database.getTickets()) {
+        for (Ticket ticket : database.getTickets()) {
             if (ticket.getCustomerId() == clientId && ticket.getDate().equals(date))
                 tickets.add(ticket);
         }
         return tickets;
-
     }
 
-    public boolean buyTicket(int clientId, String cardNo){
+    public boolean buyTicket(int clientId, String cardNo) {
 
         int orderId = database.createTicketOrder(clientId);
         double amount = database.getTicketAmount();
-        return paymentProvider.buyTicket(orderId,  cardNo, amount);
-
+        return paymentProvider.buyTicket(orderId, cardNo, amount);
     }
 
-    public boolean checkTicket(String qrcode){
-        for (Ticket ticket: database.getTickets()) {
-            if (ticket.getQrcode().equals(qrcode)){
+    public boolean checkTicket(String qrcode) {
+        for (Ticket ticket : database.getTickets()) {
+            if (ticket.getQrcode().equals(qrcode)) {
                 ticket.setEnable(false);
                 // Save database ...
                 return true;
@@ -254,39 +264,33 @@ class TicketProvider{
         }
         return false;
     }
-
-
 }
 
-class CustomerProvider{
-
+class CustomerProvider {
     private Database database;
 
     public CustomerProvider(Database database) {
         this.database = database;
     }
 
-    public Customer getCustomer(String login, String password){
+    public Customer getCustomer(String login, String password) {
         return new Customer();
     }
-
 }
 
 /**
  * Автобусная станция
  */
-class BusStation{
-
+class BusStation {
     private final TicketProvider ticketProvider;
 
-    public BusStation(TicketProvider ticketProvider){
+    public BusStation(TicketProvider ticketProvider) {
         this.ticketProvider = ticketProvider;
     }
 
-    public boolean checkTicket(String qrCode){
+    public boolean checkTicket(String qrCode) {
         return ticketProvider.checkTicket(qrCode);
     }
-
 }
 
 
